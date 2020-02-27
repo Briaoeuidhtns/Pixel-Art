@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  php:
+    image: php:7.0-apache
+    ports:
+      - 80:80
+    volumes:
+      - ./build/:/var/www/html/:ro
+      - ./data/:/data:rw
+    environment:
+      - DATA_DIR=/data
+
