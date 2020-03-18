@@ -38,7 +38,6 @@ const useStyles = makeStyles<ThemeType>(theme =>
       backgroundColor: theme.palette.background.paper,
       borderColor: theme.palette.secondary.main,
       '&:disabled': {
-        cursor: 'not-allowed',
         color: theme.palette.text.disabled,
         borderColor: theme.palette.action.disabled,
         backgroundColor: theme.palette.action.disabledBackground,

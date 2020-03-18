@@ -18,7 +18,7 @@ const useStyles = makeStyles<ThemeType>(theme =>
         boxSizing: 'inherit',
       },
       body: {
-        margin: 0,
+        margin: theme.spacing.unit,
         color: theme.palette.text.primary,
         ...theme.typography.body2,
         backgroundColor: theme.palette.background.default,
@@ -28,17 +28,21 @@ const useStyles = makeStyles<ThemeType>(theme =>
         '&::backdrop': {
           backgroundColor: theme.palette.background.default,
         },
+        overflow: 'hidden',
       },
     },
+    main: { textAlign: 'center' },
   })
 )
 
 const App = () => {
-  useStyles()
+  const classes = useStyles()
   return (
     <Provider {...{ store }}>
-      <Controls />
-      <Canvas />
+      <div className={classes.main}>
+        <Controls />
+        <Canvas />
+      </div>
     </Provider>
   )
 }
