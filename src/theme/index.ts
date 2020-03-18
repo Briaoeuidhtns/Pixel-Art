@@ -1,4 +1,4 @@
-import { default as Teal } from './theme.json'
+import { default as Teal } from './teal'
 
 export { Teal }
 

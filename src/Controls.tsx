@@ -28,17 +28,28 @@ type Props = ReturnType<typeof mapState> & typeof mapDispatch
 const useStyles = makeStyles<ThemeType>(theme =>
   createStyles({
     btn: {
-      all: 'unset',
+      ...theme.typography.button,
+      ...theme.shape,
+      boxShadow: theme.shadows[1],
       padding: '.375rem .75rem',
-      borderRadius: '.25rem',
+      margin: theme.spacing.unit,
+      borderStyle: 'outset',
       color: theme.palette.text.primary,
-      backgroundColor: theme.palette.secondary.main,
+      backgroundColor: theme.palette.background.paper,
       borderColor: theme.palette.secondary.main,
+      '&:disabled': {
+        cursor: 'not-allowed',
+        color: theme.palette.text.disabled,
+        borderColor: theme.palette.action.disabled,
+        backgroundColor: theme.palette.action.disabledBackground,
+      },
       '&:not(:disabled):hover': {
         cursor: 'pointer',
-
         backgroundColor: theme.palette.action.hover,
-        borderColor: theme.palette.action.hover,
+      },
+      '&:not(:disabled):active': {
+        backgroundColor: theme.palette.action.active,
+        boxShadow: theme.shadows[0],
       },
     },
   })
@@ -82,7 +93,10 @@ export const Controls: React.FC<Props> = ({
             onChange={async e => {
               const file = e.target.files?.[0]
               try {
-                const content = await (file as any)?.text().then(JSON.parse)
+                const content:
+                  | PaintFile
+                  | object
+                  | undefined = await (file as any)?.text().then(JSON.parse)
                 if (!isPaintFile(content))
                   throw new Error('JSON file but not a paint file')
                 setFileContent(content)
