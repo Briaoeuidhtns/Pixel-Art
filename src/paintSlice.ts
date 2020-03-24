@@ -14,7 +14,9 @@ interface InitialState {
 const paintSlice = createSlice({
   name: 'paint',
   initialState: identity<InitialState>({
-    canvas: [['#fff']],
+    // Array creates an empty array of length 5, which just has 5 empty slots.
+    // Spreading it makes it `map`pable
+    canvas: [...Array(5)].map(() => Array(5).fill('#fff')),
     color: '#000000',
     drawing: false,
   }),

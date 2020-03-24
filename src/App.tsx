@@ -4,12 +4,10 @@ import { Provider } from 'react-redux'
 import Canvas from './Canvas'
 import Controls from './Controls'
 import store from './store'
-import { resize } from './paintSlice'
 
 import { ThemeType } from './theme'
 import { makeStyles, createStyles } from '@material-ui/styles'
 
-// store.dispatch(resize({ x: 10, y: 10, color: '#fff' }))
 const useStyles = makeStyles<ThemeType>(theme =>
   createStyles({
     '@global': {
