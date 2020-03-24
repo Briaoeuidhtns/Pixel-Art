@@ -7,20 +7,20 @@ import { makeStyles, createStyles } from '@material-ui/styles'
 import { ThemeType } from './theme'
 
 const mapState = ({ paint: state }: State) => ({
-  grid: state.canvas,
-  drawing: state.drawing,
+  grid: state.present.canvas,
+  drawing: state.present.drawing,
 })
 
 const useStyles = makeStyles<ThemeType, { rows: number; cols: number }>(theme =>
   createStyles({
     container: {
       display: 'grid',
-      borderStyle: 'solid',
-      borderColor: 'black',
+      boxShadow: theme.shadows[3],
       gridTemplateRows: ({ rows }) => `repeat(${rows}, 1fr)`,
       gridTemplateColumns: ({ cols }) => `repeat(${cols}, 1fr)`,
       gridGap: '3px',
       margin: 'auto',
+      padding: theme.spacing.unit * 2,
 
       width: '70vh',
       // width is limiting
@@ -45,7 +45,7 @@ export const Canvas: React.FC<Props> = ({
   startStroke,
   endStroke,
 }) => {
-  const classes = useStyles({ rows: grid.length, cols: grid[0].length })
+  const classes = useStyles({ rows: grid.length, cols: grid[0]?.length || 0 })
   return (
     <div
       className={classes.container}

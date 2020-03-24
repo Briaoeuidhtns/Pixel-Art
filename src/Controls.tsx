@@ -16,9 +16,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 const mapState = ({ paint: state }: State) => ({
-  hasUndo: !!state.undo.length,
-  hasRedo: !!state.redo.length,
-  color: state.color,
+  hasUndo: !!state.past.length,
+  hasRedo: !!state.future.length,
+  color: state.present.color,
 })
 
 const mapDispatch = { undo, redo, changeColor, resize }
@@ -30,13 +30,19 @@ const useStyles = makeStyles<ThemeType>(theme =>
     btn: {
       ...theme.typography.button,
       ...theme.shape,
+      borderWidth: '2px',
       boxShadow: theme.shadows[1],
       padding: '.375rem .75rem',
       margin: theme.spacing.unit,
+      marginBottom: theme.spacing.unit * 2,
       borderStyle: 'outset',
       color: theme.palette.text.primary,
       backgroundColor: theme.palette.background.paper,
       borderColor: theme.palette.secondary.main,
+      minWidth: 64,
+      lineHeight: 'normal',
+      display: 'inline-block',
+      userSelect: 'none',
       '&:disabled': {
         color: theme.palette.text.disabled,
         borderColor: theme.palette.action.disabled,
@@ -44,12 +50,15 @@ const useStyles = makeStyles<ThemeType>(theme =>
       },
       '&:not(:disabled):hover': {
         cursor: 'pointer',
-        backgroundColor: theme.palette.action.hover,
+        filter: `brightness(${1 - theme.palette.action.hoverOpacity})`,
       },
       '&:not(:disabled):active': {
-        backgroundColor: theme.palette.action.active,
+        filter: `brightness(${1 - theme.palette.action.activeOpacity})`,
         boxShadow: theme.shadows[0],
       },
+    },
+    colorIcon: {
+      filter: `drop-shadow(0px 0px 5px ${theme.palette.grey[600]})`,
     },
   })
 )
@@ -140,7 +149,11 @@ export const Controls: React.FC<Props> = ({
           10x10
         </button>
         <label className={classes.btn}>
-          <FontAwesomeIcon icon={ColorIcon} color={color} />
+          <FontAwesomeIcon
+            icon={ColorIcon}
+            color={color}
+            className={classes.colorIcon}
+          />
           <input
             type="color"
             style={{ display: 'none' }}

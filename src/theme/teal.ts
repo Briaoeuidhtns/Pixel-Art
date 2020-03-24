@@ -205,6 +205,7 @@ export default {
       selected: 'rgba(0, 0, 0, 0.14)',
       disabledBackground: 'rgba(0, 0, 0, 0.12)',
       disabled: 'rgba(0, 0, 0, 0.26)',
+      activeOpacity: 0.54,
       active: 'rgba(0, 0, 0, 0.54)',
     },
     primary: {
