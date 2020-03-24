@@ -1,7 +1,7 @@
 * Pixel Paint
 
 ** Running
-The site is built into `build`. I have been testing with `docker-compose up` but it should also work with a php7.4 server from that folder. 
+The site is built into `build`. I have been testing with `docker-compose up` but it should also work with a php7.0 server from that folder. 
 
 This is also the folder that was uploaded to the school's server
 
@@ -13,9 +13,12 @@ I wrote in typescript, but I ran it through the ts compiler to get plain js in c
 
 I wrote all of the css, although most of it is part of react components as css-in-js. I did include a seperate file for the nav bar bc I wasn't sure if it would be ok if that was also embedded for grading purposes.
 
-I did include a modified theme from https://react-theming.github.io/create-mui-theme/, but it is just a set of colors and sizes and whatnot. The generated file is in `src/theme/teal.ts`
+I did include a modified theme from https://react-theming.github.io/create-mui-theme/, but it is just a set of colors and sizes and whatnot in plain json. The generated file is in `src/theme/teal.ts`
 
 ** Bugs
 I can't figure out why the color input calls it's onChange every time the color gets changed. I was under the impression that onChange should only happen when select is hit and onInput was for all changes, but they seem to both be the same on my machine on ff and chrome. This means that hitting undo will undo a single step of the color change, and if you drag the cursor around each step will add a new color to be undone. I think this still fits within the assignment spec, but it's annoying and caught me off guard. 
 
-It doesn't scale that well in super low height windows, but I don't think the window is useable at that scale either way. Can't really solve it without measuring things in js, and I didnt want to do that.
+It doesn't scale that well in super low height windows, but I don't think the window is useable at that scale either way. Can't really solve it without measuring things in js, and I don't want to do that.
+
+** Version info
+I tested on firefox-developer-edition=75.0b6-1, google-chrome=79.0.3945.130-1, and next-browser=1.4.0-2 which is webkit based, all on linux.
