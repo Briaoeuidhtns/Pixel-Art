@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
-import { connect } from 'react-redux'
-import { undo, redo, changeColor, resize } from './paintSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { undo, redo, changeColor, resize, load, download } from './paintSlice'
 import { State } from './store'
 import Modal from './components/modal'
 import { FileManager } from './FileManager'
@@ -13,17 +13,10 @@ import {
   faArchive as FileManagerIcon,
   faUndo as UndoIcon,
   faRedo as RedoIcon,
+  faSave as SaveIcon,
 } from '@fortawesome/free-solid-svg-icons'
-
-const mapState = ({ paint: state }: State) => ({
-  hasUndo: !!state.past.length,
-  hasRedo: !!state.future.length,
-  color: state.present.color,
-})
-
-const mapDispatch = { undo, redo, changeColor, resize }
-
-type Props = ReturnType<typeof mapState> & typeof mapDispatch
+import { FileSave } from './FileSave'
+import { uploadFile, fetchFilesList } from './fileSlice'
 
 const useStyles = makeStyles<ThemeType>(theme =>
   createStyles({
@@ -63,88 +56,123 @@ const useStyles = makeStyles<ThemeType>(theme =>
   })
 )
 
-export const Controls: React.FC<Props> = ({
-  undo,
-  redo,
-  hasUndo,
-  hasRedo,
-  color,
-  changeColor,
-  resize,
-}) => {
+export const Controls: React.FC = () => {
   const [loadOpen, setLoadOpen] = useState(false)
+  const [saveOpen, setSaveOpen] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null!)
-  const [fileContent, setFileContent] = useState<PaintFile | undefined>()
+  const [fileName, setFileName] = useState('')
   const classes = useStyles()
+  const dispatch = useDispatch()
+  const hasUndo = useSelector((state: State) => !!state.paint.past.length)
+  const hasRedo = useSelector((state: State) => !!state.paint.future.length)
+  const color = useSelector((state: State) => state.paint.present.color)
+
+  const fileManagerModal = (
+    <Modal
+      open={loadOpen}
+      onClose={() => {
+        setLoadOpen(false)
+        setFileName('')
+      }}
+      header="File Manager"
+      footer={
+        <>
+          <button
+            className={classes.btn}
+            onClick={() => {
+              dispatch(load(fileName))
+              setLoadOpen(false)
+            }}
+            disabled={!fileName}
+          >
+            Open
+          </button>
+          <button
+            className={classes.btn}
+            onClick={() => download(fileName)}
+            disabled={!fileName}
+          >
+            Download
+          </button>
+        </>
+      }
+    >
+      <label className={classes.btn}>
+        Upload File
+        <input
+          ref={fileInput}
+          type="file"
+          style={{ display: 'none' }}
+          accept=".paint"
+          onChange={async e => {
+            const file = e.target.files?.[0]
+            let uploaded: PaintFile | object | null = null
+            try {
+              if (file != null) {
+                uploaded = {
+                  name: file.name,
+                  data: JSON.parse(await (file as any).text()),
+                }
+                if (!isPaintFile(uploaded))
+                  throw new Error('JSON file but not a paint file')
+                await uploadFile(uploaded)
+                dispatch(fetchFilesList())
+                alert(`Uploaded ${file.name}`)
+              }
+            } catch (e) {
+              alert(e)
+              console.log({ error: e, file: uploaded })
+            }
+            fileInput.current.value = ''
+          }}
+        />
+      </label>
+      <FileManager
+        file={fileName}
+        onChange={setFileName}
+        shouldUpdate={loadOpen}
+      />
+    </Modal>
+  )
+
   return (
     <>
-      <Modal
-        open={loadOpen}
-        onClose={() => {
-          setLoadOpen(false)
-        }}
-        header="File Manager"
-        footer={
-          <>
-            <button className={classes.btn}>Open</button>
-            <button className={classes.btn}>Download</button>
-          </>
-        }
-      >
-        <label className={classes.btn}>
-          Upload File
-          <input
-            ref={fileInput}
-            type="file"
-            style={{ display: 'none' }}
-            accept=".paint"
-            onChange={async e => {
-              const file = e.target.files?.[0]
-              try {
-                const content:
-                  | PaintFile
-                  | object
-                  | undefined = await (file as any)?.text().then(JSON.parse)
-                if (!isPaintFile(content))
-                  throw new Error('JSON file but not a paint file')
-                setFileContent(content)
-              } catch (e) {
-                alert(e)
-                fileInput.current.value = ''
-              }
-            }}
-          />
-        </label>
-        <FileManager shouldUpdate={loadOpen} />
-      </Modal>
-
+      {fileManagerModal}
+      <FileSave
+        buttonClassName={classes.btn}
+        open={saveOpen}
+        onClose={() => setSaveOpen(false)}
+      />
       <div>
         <button className={classes.btn} onClick={() => setLoadOpen(true)}>
           <FontAwesomeIcon icon={FileManagerIcon} />
         </button>
+        <button className={classes.btn} onClick={() => setSaveOpen(true)}>
+          <FontAwesomeIcon icon={SaveIcon} />
+        </button>
         <button
           className={classes.btn}
-          onClick={() => undo()}
+          onClick={() => dispatch(undo())}
           disabled={!hasUndo}
         >
           <FontAwesomeIcon icon={UndoIcon} />
         </button>
         <button
           className={classes.btn}
-          onClick={() => redo()}
+          onClick={() => dispatch(redo())}
           disabled={!hasRedo}
         >
           <FontAwesomeIcon icon={RedoIcon} />
         </button>
         <button
           className={classes.btn}
-          onClick={() => resize({ x: 5, y: 5, color: '#ffffff' })}
+          onClick={() => dispatch(resize({ x: 5, y: 5, color: '#ffffff' }))}
         >
           5x5
         </button>
         <button
           className={classes.btn}
-          onClick={() => resize({ x: 10, y: 10, color: '#ffffff' })}
+          onClick={() => dispatch(resize({ x: 10, y: 10, color: '#ffffff' }))}
         >
           10x10
         </button>
@@ -157,7 +185,7 @@ export const Controls: React.FC<Props> = ({
           <input
             type="color"
             style={{ display: 'none' }}
-            onChange={e => changeColor(e.target.value)}
+            onChange={e => dispatch(changeColor(e.target.value))}
             value={color}
           />
         </label>
@@ -165,4 +193,4 @@ export const Controls: React.FC<Props> = ({
     </>
   )
 }
-export default connect(mapState, mapDispatch)(Controls)
+export default Controls

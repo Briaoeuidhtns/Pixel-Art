@@ -1,5 +1,8 @@
 import { createSlice, AnyAction, Reducer, createAction } from '@reduxjs/toolkit'
+import { AppThunk } from './store'
 import { identity } from 'lodash'
+import { PaintFile, isPaintFile } from './validators'
+import save from './util/save'
 
 export type Color = string
 
@@ -62,6 +65,14 @@ const paintSlice = createSlice({
     endStroke(state) {
       state.drawing = false
     },
+    loadSuccess: {
+      reducer(state, { payload: grid }) {
+        state.canvas = grid
+      },
+      prepare(grid: Grid) {
+        return { payload: grid, ...UNDOABLE, error: undefined }
+      },
+    },
   },
 })
 
@@ -121,6 +132,39 @@ const manageUndo = <S>(reducer: Reducer<S, AnyAction>) => {
     if (isUndoable(action))
       return { past: [present, ...past], present: next, future: [] }
     return { ...state, present: next }
+  }
+}
+
+export const load = (name: string): AppThunk => async dispatch => {
+  try {
+    const response = await fetch(
+      './api/load.php?' + new URLSearchParams({ name })
+    )
+    const file: PaintFile | unknown = await response.json()
+
+    if (isPaintFile(file)) dispatch(paintSlice.actions.loadSuccess(file.data))
+    else throw new Error(JSON.stringify(file))
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const download = async (name: string) => {
+  try {
+    const response = await fetch(
+      './api/load.php?' + new URLSearchParams({ name })
+    )
+    const file: PaintFile | unknown = await response.json()
+
+    console.log(file)
+    if (isPaintFile(file))
+      save(
+        file.name,
+        new Blob([JSON.stringify(file.data)], { type: 'application/json' })
+      )
+    else throw new Error(JSON.stringify(file))
+  } catch (err) {
+    console.error(err)
   }
 }
 

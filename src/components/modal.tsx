@@ -20,6 +20,7 @@ const useStyles = makeStyles<ThemeType>(theme =>
       height: '100%',
       overflow: 'auto',
       backgroundColor: theme.palette.common.black + 'a', // for transparency
+      textAlign: 'initial',
     },
 
     modalContent: {

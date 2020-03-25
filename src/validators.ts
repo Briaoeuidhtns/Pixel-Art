@@ -13,6 +13,6 @@ export const isPaintFile = (maybeFile: unknown): maybeFile is PaintFile => {
     file &&
     typeof file.name == 'string' &&
     file.data &&
-    file.data.every(r => r.length && r.every(el => isColor(el)))
+    file.data.every?.(r => r.length && r.every(el => isColor(el)))
   )
 }

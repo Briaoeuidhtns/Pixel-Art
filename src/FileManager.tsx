@@ -4,9 +4,15 @@ import { useSelector, useDispatch } from 'react-redux'
 import { State, Dispatch } from './store'
 
 interface Props {
-  shouldUpdate: any
+  shouldUpdate: boolean
+  file: string
+  onChange: (file: string) => unknown
 }
-export const FileManager: React.FC<Props> = ({ shouldUpdate }) => {
+export const FileManager: React.FC<Props> = ({
+  shouldUpdate,
+  file,
+  onChange,
+}) => {
   const dispatch = useDispatch<Dispatch>()
   const { files } = useSelector(({ files }: State) => files)
   useEffect(() => {
@@ -14,7 +20,12 @@ export const FileManager: React.FC<Props> = ({ shouldUpdate }) => {
   }, [dispatch, shouldUpdate])
   const has = files?.length || 0
   return (
-    <select disabled={!has}>
+    <select
+      disabled={!has}
+      style={{ display: 'block' }}
+      value={file}
+      onChange={e => onChange(e.target.value)}
+    >
       <option value="">
         -- {has ? 'Please choose a file' : 'No available files'} --
       </option>

@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { identity } from 'lodash'
 import { AppThunk } from './store'
+import { PaintFile } from './validators'
+
 interface InitialState {
   files?: string[]
 }
@@ -34,7 +36,6 @@ export const fetchFilesList = (): AppThunk => async dispatch => {
   let fileList: FileResponse | ErrorResponse = { msg: 'no response' }
   try {
     const response = await fetch('./api/list.php')
-    console.log('refreshed')
     fileList = await response.json()
 
     if (isFileResponse(fileList)) dispatch(loadFilesSuccess(fileList.files))
@@ -43,4 +44,13 @@ export const fetchFilesList = (): AppThunk => async dispatch => {
     console.error(fileList)
     console.error(err)
   }
+}
+
+export const uploadFile = async (file: PaintFile) => {
+  const response = await fetch('./api/save.php', {
+    method: 'POST',
+    body: JSON.stringify(file),
+  })
+
+  if (response.status !== 201) throw Error(await response.text())
 }
