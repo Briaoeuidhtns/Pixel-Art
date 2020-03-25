@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="stylesheet" href="./appbar.css" />
+    <title>Pixel Paint Help</title>
+  </head>
+  <body>
+    <ul class="appbar">
+      <li class="current"><a>Help</a></li>
+      <li><a href=".">Paint</a></li>
+    </ul>
+    <h1>Help</h1>
+    <h2>1: Info</h2>
+    <p>Brian Brunner</p>
+    <p>All tiers complete</p>
+    <h3>Extensions</h3>
+    <ul>
+      <li>Buttons styled</li>
+      <li>Used color input</li>
+      <li>More than one file</li>
+      <li>undo/redo properly disabled</li>
+      <li>File management as overlay</li>
+      <li>Loading a file can be undone</li>
+    </ul>
+
+    <h2>2: CSS modifications</h2>
+    <p>
+      Most of my CSS is as jss inside of each component. This gets compiled down
+      to classes named jss# to avoid collisions.
+    </p>
+    <p>
+      I didn't use any css templates, but I did include a theme modified from
+      <a href="https://react-theming.github.io/create-mui-theme/"
+        >react-theming.github.io/create-mui-theme</a
+      >. It is less of a css template and more colors and sizes and whatnot in
+      plain json. The generated file is in <code>src/theme/teal</code>.
+    </p>
+    <p>
+      I did all the styling for the navbar and text manually in
+      <code>public/appbar.css</code> just to be safe
+    </p>
+    <h2>3: Use</h2>
+    <p>
+      The file manager is the first icon, and has the upload and download
+      functionality. Upload immediately uploads your file and adds it to the
+      list of available files.
+    </p>
+    <p>
+      The save dialog is the floppy disc icon second from the left. Files are
+      stored flat in the same folder. After saving a file is available to
+      download or reopen from the file manager.
+    </p>
+    <p>
+      Undo and redo for coloring is based on strokes. Undoing will move back to
+      the point at which the current click began.
+    </p>
+    <h3>Bugs</h3>
+
+    <p>
+      I can't figure out why the color input calls it's onChange every time the
+      color gets changed. I was under the impression that onChange should only
+      happen when select is hit and onInput was for all changes, but they seem
+      to both be the same on my machine on ff and chrome. This means that
+      hitting undo will undo a single step of the color change, and if you drag
+      the cursor around each step will add a new color to be undone, which adds
+      up quickly. I recommend either clicking carefully or just entering in a
+      value. I think this still fits within the assignment spec, but it's
+      annoying and caught me off guard.
+    </p>
+
+    <p>
+      It doesn't scale that well in super low height windows, but I don't think
+      the window is useable at that scale either way. Can't really solve it
+      without measuring things in js, and I don't want to do that.
+    </p>
+  </body>
+</html>

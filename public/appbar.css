@@ -1,0 +1,34 @@
+.appbar {
+  margin: 0;
+  padding: 0;
+  background-color: darkgray;
+  display: flex;
+  list-style: none;
+}
+
+.appbar a {
+  display: block;
+  text-transform: uppercase;
+  padding: 14px 16px;
+
+  /* text modifications */
+  /* GRADING: CSS */
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.appbar li:hover:not(.current) {
+  background-color: gray;
+}
+
+.appbar .current {
+  order: -1;
+}
+
+.appbar .current a {
+  background-color: teal;
+  cursor: initial;
+}
