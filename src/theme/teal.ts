@@ -3,15 +3,6 @@ export default {
     keys: ['xs', 'sm', 'md', 'lg', 'xl'],
     values: { xs: 0, lg: 1280, sm: 600, xl: 1920, md: 960 },
   },
-  mixins: {
-    toolbar: {
-      minHeight: 56,
-      '@media (min-width:0px) and (orientation: landscape)': {
-        minHeight: 48,
-      },
-      '@media (min-width:600px)': { minHeight: 64 },
-    },
-  },
   shadows: [
     'none',
     '0px 1px 3px 0px rgba(0, 0, 0, 0.2),0px 1px 1px 0px rgba(0, 0, 0, 0.14),0px 2px 1px -1px rgba(0, 0, 0, 0.12)',
@@ -40,7 +31,6 @@ export default {
     '0px 11px 15px -7px rgba(0, 0, 0, 0.2),0px 24px 38px 3px rgba(0, 0, 0, 0.14),0px 9px 46px 8px rgba(0, 0, 0, 0.12)',
   ],
   direction: 'ltr',
-  overrides: {},
   transitions: {
     easing: {
       easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
@@ -215,5 +205,5 @@ export default {
       contrastText: 'rgba(0, 0, 0, 0.87)',
     },
   },
-  themeName: 'Scooter Razzmatazz Nubian Ibex',
+  themeName: 'Teal',
 } as const
