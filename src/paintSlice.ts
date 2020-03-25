@@ -129,6 +129,8 @@ const manageUndo = <S>(reducer: Reducer<S, AnyAction>) => {
 
     const next = reducer(present, action)
     if (present === next) return state // Possibly prevent extra draws
+    // GRADING: ACTION
+    // Added from the outside using dispatch
     if (isUndoable(action))
       return { past: [present, ...past], present: next, future: [] }
     return { ...state, present: next }
